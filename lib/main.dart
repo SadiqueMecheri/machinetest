@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/commonviewmodel.dart';
-import 'screen2/start_screen.dart';
+import 'screens/start_screen.dart';
 
 
 void main() {

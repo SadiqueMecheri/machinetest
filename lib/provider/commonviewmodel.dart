@@ -78,11 +78,27 @@ class CommonViewModel extends ChangeNotifier {
 
     allchat = await Webservice().fetchallchats();
     allchatlist = allchat['allchatdata'];
+      filteredChatList = List.from(allchatlist); // Initialize filtered list
     log("allcourselist length ====== ${allchatlist.length}");
     fetchallchatsloading = false;
     notifyListeners();
     return allchat;
   }
+
+  List<ChatMainList> filteredChatList = [];
+String searchQuery = '';
+
+void filterChats(String query) {
+  searchQuery = query.toLowerCase();
+  if (searchQuery.isEmpty) {
+    filteredChatList = List.from(allchatlist);
+  } else {
+    filteredChatList = allchatlist.where((chat) {
+      return chat.attributes!.name!.toLowerCase().contains(searchQuery);
+    }).toList();
+  }
+  notifyListeners();
+}
 
   // //fetchsinglechat
   late Map<String, dynamic> singchat;
@@ -102,8 +118,8 @@ class CommonViewModel extends ChangeNotifier {
   }
 
 
-  void addNewMessage(SingleChat newMessage) {
-  singlechatlist.insert(0, newMessage); // Add at beginning of list
+void addNewMessage(SingleChat newMessage) {
+  singlechatlist.add(newMessage); // Add at end of list
   notifyListeners();
 }
 }

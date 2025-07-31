@@ -80,7 +80,7 @@ class StartScreen extends StatelessWidget {
                           titlecolor: Colors.white,
                           color: Appcolor().primaryColor,
                           onTap: () {
-                            Navigator.pushReplacement(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) {

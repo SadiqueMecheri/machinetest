@@ -12,16 +12,21 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   CommonViewModel? vm;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     vm = Provider.of<CommonViewModel>(context, listen: false);
     vm!.fetchallchats();
-
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,10 +57,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CircularProgressIndicator(),
           );
         } else {
-          return courses.allchatlist.length == 0
-              ? const Center(
+          final displayList = courses.searchQuery.isEmpty 
+              ? courses.allchatlist 
+              : courses.filteredChatList;
+              
+          return courses.allchatlist .length == 0
+              ? Center(
                   child: Text(
-                  "No Chats Available",
+                  
+                       "No results found",
                   style: TextStyle(fontSize: 15, color: Colors.black),
                 ))
               : SingleChildScrollView(
@@ -124,8 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextFormField(
+                              controller: _searchController,
                               autofocus: false,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.text,
                               style: TextStyle(
                                 fontSize: 15.0 /
                                     MediaQuery.textScaleFactorOf(context),
@@ -177,7 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                courses.filterChats(value);
+                              },
                             ),
                             Space.h15,
                             Text(
@@ -189,6 +202,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Space.h20,
+
+                             
                             Column(
                               children: List.generate(1, (index) {
                                 return ListTile(
@@ -223,18 +238,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             Space.h10,
                             Divider(color: Colors.grey.shade300),
                             Space.h10,
+                             displayList.isEmpty ?
+                              Center(child: Text("No data")):
                             Column(
                               children: List.generate(
-                                  courses.allchatlist.length, (index) {
-                                final coursedata = courses.allchatlist[index];
+                                  displayList.length, (index) {
+                                final coursedata = displayList[index];
                                 DateTime utcTime = DateTime.parse(coursedata
                                     .attributes!.lastActiveAt
                                     .toString());
 
-// Convert to local time (optional, depending on your use case)
                                 DateTime localTime = utcTime.toLocal();
-
-// Format to AM/PM
                                 String formattedTime =
                                     DateFormat('hh:mm a').format(localTime);
                                 return Padding(

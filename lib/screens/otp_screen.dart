@@ -168,7 +168,10 @@ class OtpScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: vm!.otpconfirmloading
-              ? Center(child: CircularProgressIndicator())
+              ? Container(
+                
+                height:50,
+                child: Center(child: CircularProgressIndicator()))
               : WidgetBotton(
                   title: 'Next',
                   titlecolor: Colors.white,

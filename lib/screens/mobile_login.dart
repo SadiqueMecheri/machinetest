@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:machinetest/screen2/otp_screen.dart';
+import 'package:machinetest/screens/otp_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../contants.dart';
@@ -68,7 +68,7 @@ class MobileLoginScreen extends StatelessWidget {
                                 15.0 / MediaQuery.textScaleFactorOf(context),
                             color: Colors.black,
                           ),
-                          autovalidateMode: AutovalidateMode.always,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -179,12 +179,16 @@ class MobileLoginScreen extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: Consumer<CommonViewModel>(builder: (context, courses, child) {
             return vm!.registrationloading
-                ? Center(child: CircularProgressIndicator())
+                ? Container(
+                  height: 50,
+                  child: Center(child: CircularProgressIndicator()))
                 : WidgetBotton(
                     title: 'Next',
                     titlecolor: Colors.white,
                     color: Appcolor().primaryColor,
                     onTap: () {
+
+                   
                       if (_formKey.currentState!.validate()) {
                         vm!
                             .sendotp(
