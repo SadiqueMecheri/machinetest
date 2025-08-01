@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import '../contants.dart';
@@ -92,6 +93,10 @@ class OtpScreen extends StatelessWidget {
                         Space.h10,
                         Pinput(
                           length: 6,
+                            keyboardType: TextInputType.number,
+                          inputFormatters: [
+                             FilteringTextInputFormatter.digitsOnly,
+                          ],
                           defaultPinTheme: defaultPinTheme,
                           onCompleted: (pin) {
                             _enteredOtp = pin;
@@ -186,7 +191,7 @@ class OtpScreen extends StatelessWidget {
                     vm!
                         .confirmotpsent(
                       phonenumber,
-                      111111,
+                      int.tryParse(_enteredOtp)!,
                     )
                         .then((value) {
                       if (vm!.confirmotp != null &&
