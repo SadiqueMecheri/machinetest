@@ -3,7 +3,6 @@ import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:machinetest/screens/otp_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../contants.dart';
 import '../provider/commonviewmodel.dart';
 import '../session/shared_preferences.dart';
@@ -72,7 +71,6 @@ class MobileLoginScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            // ✅ Grey border
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
@@ -177,18 +175,16 @@ class MobileLoginScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Consumer<CommonViewModel>(builder: (context, courses, child) {
+          child: Consumer<CommonViewModel>(builder: (context, data, child) {
             return vm!.registrationloading
                 ? Container(
-                  height: 50,
-                  child: Center(child: CircularProgressIndicator()))
+                    height: 50,
+                    child: Center(child: CircularProgressIndicator()))
                 : WidgetBotton(
                     title: 'Next',
                     titlecolor: Colors.white,
                     color: Appcolor().primaryColor,
                     onTap: () {
-
-                   
                       if (_formKey.currentState!.validate()) {
                         vm!
                             .sendotp(

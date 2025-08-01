@@ -8,7 +8,6 @@ class Store {
   static const String _userid = "userid";
   static const String _name = "name";
   static const String _isLoggedIn = "isLoggedIn";
-  static const String _isadmin = "isAdmin";
 
 //isLoggedIn
   static Future<void> setLoggedIn(String loggedvalue) async {
@@ -20,18 +19,6 @@ class Store {
   static Future<String?> getLoggedIn() async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.getString(_isLoggedIn);
-  }
-
-//isLoggedIn
-  static Future<void> setisadminLoggedIn(String loggedvaluee) async {
-    log("logged added");
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_isadmin, loggedvaluee);
-  }
-
-  static Future<String?> getisadminLoggedIn() async {
-    final preferences = await SharedPreferences.getInstance();
-    return preferences.getString(_isadmin);
   }
 
 //username

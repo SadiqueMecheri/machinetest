@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 import '../contants.dart';
 import '../widgets/widget_start_container.dart';
 import 'mobile_login.dart';

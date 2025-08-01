@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-
 import '../contants.dart';
 import '../model/otp_response.dart';
 import '../provider/commonviewmodel.dart';
@@ -29,7 +28,7 @@ class OtpScreen extends StatelessWidget {
     vm = Provider.of<CommonViewModel>(context);
     return Scaffold(
       backgroundColor: Appcolor().backgroundColor,
-      body: Consumer<CommonViewModel>(builder: (context, courses, child) {
+      body: Consumer<CommonViewModel>(builder: (context, data, child) {
         return SafeArea(
           child: SingleChildScrollView(
             child: Center(

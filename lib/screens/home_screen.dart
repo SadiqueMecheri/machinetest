@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../contants.dart';
 import '../provider/commonviewmodel.dart';
 import 'chat_screen.dart';
@@ -51,17 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Consumer<CommonViewModel>(builder: (context, courses, child) {
-        if (courses.fetchallchatsloading == true) {
+      body: Consumer<CommonViewModel>(builder: (context, data, child) {
+        if (data.fetchallchatsloading == true) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
-          final displayList = courses.searchQuery.isEmpty 
-              ? courses.allchatlist 
-              : courses.filteredChatList;
+          final displayList = data.searchQuery.isEmpty 
+              ? data.allchatlist 
+              : data.filteredChatList;
               
-          return courses.allchatlist .length == 0
+          return data.allchatlist .length == 0
               ? Center(
                   child: Text(
                   
@@ -81,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
-                                  courses.allchatlist.length, (index) {
-                                final coursedata = courses.allchatlist[index];
+                                  data.allchatlist.length, (index) {
+                                final datalist = data.allchatlist[index];
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                     left: 8,
@@ -101,13 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CircleAvatar(
                                           radius: 25,
                                           backgroundImage: NetworkImage(
-                                              coursedata
+                                              datalist
                                                   .attributes!.profilePhotoUrl
                                                   .toString()),
                                         ),
                                         Space.h5,
                                         Text(
-                                          coursedata.attributes!.name
+                                          datalist.attributes!.name
                                               .toString(),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -189,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               onChanged: (value) {
-                                courses.filterChats(value);
+                                data.filterChats(value);
                               },
                             ),
                             Space.h15,

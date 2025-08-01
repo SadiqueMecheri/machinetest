@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:machinetest/model/get_chatprofile_model.dart';
 import 'package:provider/provider.dart';
-
 import '../contants.dart';
 import '../model/getsinglechat_model.dart';
 import '../model/getsinglechat_model.dart' as datarum;
@@ -47,88 +44,11 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {});
   }
 
-  void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
-
-    final newMessage = SingleChat(
-      type: "chat_message",
-      id: (_tempMessageId!).toString(),
-      attributes: datarum.DatumAttributes(
-        chatThreadId: 1,
-        senderId: int.tryParse(currentuserid ?? '0'),
-        receiverId: 1,
-        message: _messageController.text,
-        chatMessageTypeId: 1,
-        sentAt: DateTime.now(),
-        deliveredAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        isReadReceiptsOn: 1,
-        isOneTimeView: false,
-        isOnVanishMode: false,
-      ),
-      relationships: relation.Relationships(
-        sender: GiftOrder(
-          data: gift.Data(
-            id: currentuserid,
-            type: "user",
-          ),
-        ),
-      ),
-    );
-
-    vm!.addNewMessage(newMessage);
-    _messageController.clear();
-    _tempMessageId = _tempMessageId! - 1;
-
-    // Scroll to bottom after sending message
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  Map<String, List<SingleChat>> _groupMessagesByDate(
-      List<SingleChat> messages) {
-    final grouped = <String, List<SingleChat>>{};
-
-    for (final message in messages) {
-      final date = message.attributes!.createdAt!;
-      final dateKey = _getDateKey(date);
-
-      if (!grouped.containsKey(dateKey)) {
-        grouped[dateKey] = [];
-      }
-      grouped[dateKey]!.add(message);
-    }
-
-    return grouped;
-  }
-
-  String _getDateKey(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final messageDate = DateTime(date.year, date.month, date.day);
-
-    if (today.difference(messageDate).inDays == 0) {
-      return 'Today';
-    } else if (today.difference(messageDate).inDays == 1) {
-      return 'Yesterday';
-    } else {
-      return DateFormat('dd MMM yyyy').format(date);
-    }
   }
 
   @override
@@ -203,13 +123,13 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
-      body: Consumer<CommonViewModel>(builder: (context, courses, child) {
-        if (courses.fetchsinglechatloading == true) {
+      body: Consumer<CommonViewModel>(builder: (context, data, child) {
+        if (data.fetchsinglechatloading == true) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
-          final groupedMessages = _groupMessagesByDate(courses.singlechatlist);
+          final groupedMessages = _groupMessagesByDate(data.singlechatlist);
           final sortedDates = groupedMessages.keys.toList()
             ..sort((a, b) {
               if (a == 'Today') return 1;
@@ -241,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  child: courses.singlechatlist.isEmpty
+                  child: data.singlechatlist.isEmpty
                       ? const Center(
                           child: Text(
                           "No Chats Available",
@@ -370,30 +290,80 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  String formatMessageDate(String utcDateTimeString) {
-    try {
-      final DateTime utcDateTime = DateTime.parse(utcDateTimeString);
-      final DateTime localDateTime = utcDateTime.toLocal();
+  void _sendMessage() {
+    if (_messageController.text.trim().isEmpty) return;
 
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final messageDate =
-          DateTime(localDateTime.year, localDateTime.month, localDateTime.day);
+    final newMessage = SingleChat(
+      type: "chat_message",
+      id: (_tempMessageId!).toString(),
+      attributes: datarum.DatumAttributes(
+        chatThreadId: 1,
+        senderId: int.tryParse(currentuserid ?? '0'),
+        receiverId: 1,
+        message: _messageController.text,
+        chatMessageTypeId: 1,
+        sentAt: DateTime.now(),
+        deliveredAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        isReadReceiptsOn: 1,
+        isOneTimeView: false,
+        isOnVanishMode: false,
+      ),
+      relationships: relation.Relationships(
+        sender: GiftOrder(
+          data: gift.Data(
+            id: currentuserid,
+            type: "user",
+          ),
+        ),
+      ),
+    );
 
-      final difference = today.difference(messageDate).inDays;
+    vm!.addNewMessage(newMessage);
+    _messageController.clear();
+    _tempMessageId = _tempMessageId! - 1;
 
-      if (difference == 0) {
-        return 'Today';
-      } else if (difference == 1) {
-        return 'Yesterday';
-      } else if (difference < 7) {
-        return DateFormat.E().format(localDateTime); // e.g., Mon, Tue
-      } else {
-        return DateFormat('dd MMM yyyy')
-            .format(localDateTime); // e.g., 18 Jul 2025
+    // Scroll to bottom after sending message
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       }
-    } catch (e) {
-      return '';
+    });
+  }
+
+  Map<String, List<SingleChat>> _groupMessagesByDate(
+      List<SingleChat> messages) {
+    final grouped = <String, List<SingleChat>>{};
+
+    for (final message in messages) {
+      final date = message.attributes!.createdAt!;
+      final dateKey = _getDateKey(date);
+
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(message);
+    }
+
+    return grouped;
+  }
+
+  String _getDateKey(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(date.year, date.month, date.day);
+
+    if (today.difference(messageDate).inDays == 0) {
+      return 'Today';
+    } else if (today.difference(messageDate).inDays == 1) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('dd MMM yyyy').format(date);
     }
   }
 }
